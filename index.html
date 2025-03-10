@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <button onclick="getWeather()">Get My Weather</button>
+    <p id="result">Click the button to get weather data.</p>
+
+    <script>
+        function getWeather() {
+            if (!navigator.geolocation) {
+                document.getElementById("result").innerText = "Geolocation is not supported by your browser.";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+
+                    try {
+                        const response = await fetch("/weather", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ latitude, longitude })
+                        });
+
+                        const data = await response.json();
+                        if (data.main) {
+                            document.getElementById("result").innerHTML = 
+                                `Location: ${data.name} <br> 
+                                 Temperature: ${data.main.temp}°C <br> 
+                                 Weather: ${data.weather[0].description}`;
+                        } else {
+                            document.getElementById("result").innerHTML = "Error fetching data.";
+                        }
+                    } catch (error) {
+                        document.getElementById("result").innerHTML = "Error connecting to server.";
+                    }
+                },
+                (error) => {
+                    document.getElementById("result").innerText = `Error: ${error.message}`;
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+    </script>
+</body>
+</html>
