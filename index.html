@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Weather App</h1>
-    <button onclick="getWeather()">Get My Weather</button>
-    <p id="result">Click the button to get weather data.</p>
+    <div class="container">
+        <h1>🌤️ Weather App</h1>
+        <button class="btn" onclick="getWeather()">Get My Weather</button>
+        <div id="result">Click the button to get weather data.</div>
+    </div>
 
     <script>
         function getWeather() {
@@ -29,11 +32,11 @@
                         });
 
                         const data = await response.json();
-                        if (data.main) {
+                        if (data.temperature !== undefined) {
                             document.getElementById("result").innerHTML = 
-                                `Location: ${data.name} <br> 
-                                 Temperature: ${data.main.temp}°C <br> 
-                                 Weather: ${data.weather[0].description}`;
+                                `<h2>${data.location}</h2>
+                                 <p>🌡️ Temperature: <strong>${data.temperature}°C</strong></p>
+                                 <p>☁️ Weather: <strong>${data.weather}</strong></p>`;
                         } else {
                             document.getElementById("result").innerHTML = "Error fetching data.";
                         }
